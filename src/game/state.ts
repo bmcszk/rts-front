@@ -26,17 +26,29 @@ export const pieceState = atomFamily<Piece, number>({
   })
 })
 
-export const selectionState = atom<SelectionState>({
-  key: 'selection',
-  default: {
-    start: undefined,
-    end: undefined
-  }
+export const selectionStartState = atom<SelectionState | null>({
+  key: 'selectionStart',
+  default: null
 })
 
-function toPoint(str: string) : Point {
+export const selectionEndState = atom<SelectionState | null>({
+  key: 'selectionEnd',
+  default: null
+})
+
+export const selectedState = atom<Piece[]>({
+  key: 'selected',
+  default: []
+})
+
+export const movingPieceState = atom<Piece[]>({
+  key: 'moving',
+  default: []
+})
+
+function toPoint(str: string): Point {
   const array = str.split(",");
-  return { 
+  return {
     x: parseInt(array[0]),
     y: parseInt(array[1])
   }

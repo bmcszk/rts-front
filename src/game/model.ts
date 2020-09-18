@@ -27,11 +27,15 @@ export interface Piece {
 }
 
 export interface SelectionState {
-    start?: Point;
-    end?: Point;
+    point: Point;
+    shiftKey: boolean;
+}
+
+export interface SelectedState {
+    pieces: Piece[];
 }
 
 export interface PieceProps {
-    point: Point;
+    point?: Point;
     piece: Piece;
 }

@@ -1,15 +1,16 @@
 import React, { useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { PieceProps } from '../model';
+import { isSelectedSelector } from '../selectors';
 import './Piece.css';
 
 function Piece(props : PieceProps) {
     const piece = props.piece;
-    const pieceName = piece
-        ? piece.name
-        : '';
+    const pointKey = props.point
+            ? props.point.x + "," + props.point.y
+            : null;
 
-    const selected = false; //useRecoilValue()
+    const selected = useRecoilValue(isSelectedSelector(pointKey))
     //const selected = useSelector(state => state.map.selected.contains(piece.id));
     const cssClass = (piece && selected)
         ? "piece selected"
@@ -33,7 +34,7 @@ function Piece(props : PieceProps) {
 
     return (
         <button ref={ref} key={piece.id} className={cssClass} onClick={handleClick}>
-            {pieceName}
+            {piece.name}
         </button>
     );
 }
