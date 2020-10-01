@@ -40,11 +40,6 @@ export interface PieceModel {
     name: string;
 }
 
-export interface PositionModel {
-    id: string;
-    pieceId: string;
-}
-
 export interface MovementModel {
     id: string;
     from: Point;
@@ -132,7 +127,7 @@ export interface CommandMoveSelectedAction {
 export interface CommandMoveAction {
     type: typeof COMMAND_MOVE;
     payload: {
-        pieceId: string;
+        piece: PieceModel;
         dest: Point;
     }
 }
@@ -144,7 +139,7 @@ export interface CommandStopSelectedAction {
 export interface CommandStopAction {
     type: typeof COMMAND_STOP;
     payload: {
-        pieceId: string;
+        piece: PieceModel;
     }
 }
 

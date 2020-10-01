@@ -74,10 +74,10 @@ export const commandMoveSelectedAction = (dest : Point) : CommandMoveSelectedAct
     }
 }
 
-export const commandMoveAction = (pieceId: string, dest : Point) : CommandMoveAction => {
+export const commandMoveAction = (piece: PieceModel, dest : Point) : CommandMoveAction => {
     return {
         type: COMMAND_MOVE,
-        payload: { pieceId, dest }
+        payload: { piece, dest }
     }
 }
 
@@ -87,9 +87,9 @@ export const commandStopSelectedAction = () : CommandStopSelectedAction => {
     }
 }
 
-export const commandStopAction = (pieceId: string, dest : Point) : CommandStopAction => {
+export const commandStopAction = (piece: PieceModel) : CommandStopAction => {
     return {
         type: COMMAND_STOP,
-        payload: { pieceId }
+        payload: { piece }
     }
 }

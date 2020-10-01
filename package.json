@@ -11,6 +11,7 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
+    "@types/redux-saga": "^0.10.5",
     "axios": "^0.20.0",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",

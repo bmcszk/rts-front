@@ -1,27 +1,32 @@
 import { all, takeLatest, select, put, takeEvery, delay, actionChannel } from "redux-saga/effects";
 import { RootState } from "../../store/reducer";
-import { CommandMoveAction, CommandMoveSelectedAction } from "../model";
-import { COMMAND_MOVE_SELECTED, COMMAND_MOVE, commandMoveAction, moveAction } from "./game.actions"
+import { CommandMoveAction, CommandMoveSelectedAction, PieceModel, Point } from "../model";
+import { getSelectedPieces } from "./game.selectors";
+import { COMMAND_MOVE_SELECTED, COMMAND_MOVE, commandMoveAction, moveAction, stepAction, STEP_OUT, STEP_IN, commandStopAction } from "./game.actions"
 
 export function* gameSaga() {
-    const moveChannel = yield actionChannel(COMMAND_MOVE)
+    //const moveChannel = yield actionChannel(COMMAND_MOVE)
     yield all([
-        // takeLatest(COMMAND_MOVE_SELECTED, moveSelectedSaga),
-        // takeEvery(moveChannel, movePieceSaga)
+        takeLatest(COMMAND_MOVE_SELECTED, moveSelectedSaga),
+        takeEvery(COMMAND_MOVE, movePieceSaga)
     ]);
 }
-/* 
+ 
 function* moveSelectedSaga(action : CommandMoveSelectedAction) {
-    const selectedIds = yield select(state => state.game.selected.toArray());
-    yield all(selectedIds
-        .filter(id => id !== null && id !== undefined)
-        .map(id => put(commandMoveAction(id, action.payload.dest))))
+    const pieces: PieceModel[] = yield select(getSelectedPieces);
+    yield all(pieces
+        .map((piece: PieceModel) => put(commandStopAction(piece))) );
+    yield all(pieces
+        .map((piece: PieceModel) => put(commandMoveAction(piece, action.payload.dest))) );
 }
 
+
 function* movePieceSaga(action : CommandMoveAction) {
-    const {id, dest} = action.payload;
-    const square = yield select(state => state.map.board.find(v => v.occupied === id));
-    const src = square.point;
+    const {piece, dest} = action.payload;
+    const src: Point = yield select(state => state.game.pointsByPiece.get(piece.id));
+    yield put(stepAction(STEP_OUT, piece, src));
+
+    
     const vector = {
         x: dest.x - src.x,
         y: dest.y - src.y
@@ -40,18 +45,23 @@ function* movePieceSaga(action : CommandMoveAction) {
     //     valid = yield isDestinationValid(step)
     // }
     if (valid) {
-        yield put(reserve(id, step))
         // yield delay(50)
-        yield put(moveAction(id, src, step))
+        yield put(stepAction(STEP_IN, piece, step))
         if (step.x !== dest.x || step.y !== dest.y) {
             yield delay(200)
-            yield put(commandMoveAction(id, dest))
+            yield put(commandMoveAction(piece, dest))
+        }
+    } else {
+        yield put(stepAction(STEP_IN, piece, src))
+        if (step.x !== dest.x || step.y !== dest.y) {
+            yield delay(200)
+            yield put(commandMoveAction(piece, dest))
         }
     }
 }
 
-function* isDestinationValid(dest) {
+function* isDestinationValid(dest : Point) {
     const key = dest.x + "," + dest.y;
-    const square = yield select(state => state.map.board.get(key));
-    return !square.occupied;
-} */
+    const piece = yield select(state => state.game.piecesByPoint.get(key));
+    return piece === null || piece === undefined;
+} 
