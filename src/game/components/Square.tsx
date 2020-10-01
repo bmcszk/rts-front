@@ -2,7 +2,7 @@ import React from 'react';
 import './Square.css';
 import Piece from './Piece'
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { boardState, selectionEndState, selectionStartState} from '../state';
+import { boardState, commandState, selectionEndState, selectionStartState} from '../state';
 import { SquareModel, SquareProps } from '../model';
 
 function Square(props: SquareProps) {
@@ -11,6 +11,7 @@ function Square(props: SquareProps) {
     const square = useRecoilValue<SquareModel>(boardState(squareKey));
     const setSelectionStart = useSetRecoilState(selectionStartState);
     const setSelectionEnd = useSetRecoilState(selectionEndState);
+    const setCommandState = useSetRecoilState(commandState);
  
     const pieceComponent = square.occupied
         ? (<Piece piece={square.occupied} point={props.point} />)
@@ -31,6 +32,10 @@ function Square(props: SquareProps) {
                 shiftKey: e.shiftKey
             });
         } else if (e.button === 2) {
+            setCommandState({
+                command: 'move',
+                point: props.point
+            });
             //dispatch(commandMoveSelected(props.point));
         }
         disableEvent(e);

@@ -1,5 +1,5 @@
 import { atom, atomFamily } from "recoil";
-import { ConfigState, Piece, Point, SelectionState, SquareModel } from "./model";
+import { CommandState, ConfigState, Piece, Point, SelectionState, SquareModel } from "./model";
 
 export const configState = atom<ConfigState>({
   key: 'config',
@@ -44,6 +44,11 @@ export const selectedState = atom<Piece[]>({
 export const movingPieceState = atom<Piece[]>({
   key: 'moving',
   default: []
+})
+
+export const commandState = atom<CommandState | null>({
+  key: 'command',
+  default: null
 })
 
 function toPoint(str: string): Point {

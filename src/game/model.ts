@@ -1,3 +1,6 @@
+export const COMMAND_TYPE_ATTACK = 'attack';
+export const COMMAND_TYPE_MOVE = 'move';
+
 export interface ConfigState {
     width: number;
     height: number;
@@ -38,4 +41,9 @@ export interface SelectedState {
 export interface PieceProps {
     point?: Point;
     piece: Piece;
+}
+
+export interface CommandState {
+    command: typeof COMMAND_TYPE_ATTACK | typeof COMMAND_TYPE_MOVE;
+    point?: Point;
 }
