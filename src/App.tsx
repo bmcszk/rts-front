@@ -1,13 +1,14 @@
 import React from 'react';
-import {RecoilRoot} from 'recoil';
 import './App.css';
 import Game from './game/components/Game';
+import { initStore } from './store/store';
+import { Provider } from 'react-redux';
 
 function App() {
   return (
-    <RecoilRoot>
+    <Provider store={initStore()}>
         <Game />
-    </RecoilRoot>
+    </Provider>
   );
 }
 
