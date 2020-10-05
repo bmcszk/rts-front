@@ -77,10 +77,10 @@ export const commandMoveSelectedAction = (dest : model.Point) : model.CommandMov
     }
 }
 
-export const commandMoveAction = (piece: model.PieceModel, dest : model.Point) : model.CommandMoveAction => {
+export const commandMoveAction = (piece: model.PieceModel, dest : model.Point, retries: number) : model.CommandMoveAction => {
     return {
         type: COMMAND_MOVE,
-        payload: { piece, dest }
+        payload: { piece, dest, retries }
     }
 }
 

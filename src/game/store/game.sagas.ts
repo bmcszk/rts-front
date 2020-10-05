@@ -1,10 +1,11 @@
-import { all, takeLatest, select, put, takeEvery, delay, actionChannel } from "redux-saga/effects";
-import { RootState } from "../../store/reducer";
+import { all, takeLatest, select, put, takeEvery, delay } from "redux-saga/effects";
 import * as model from "../model";
 import * as selectors from "./game.selectors";
 import * as actions from "./game.actions"
-import { ActionCreatorsMapObject } from "redux";
 import { Map } from 'immutable';
+import { getPlan } from "../movement.service";
+
+const RETRIES : number = 3;
 
 export function* gameSaga() {
     //const moveChannel = yield actionChannel(COMMAND_MOVE)
@@ -41,7 +42,9 @@ function* moveThePiece(motion: model.MotionModel) {
         }
     } else {
         yield put(actions.commandStopAction(motion.piece));
-        yield put(actions.commandMoveAction(motion.piece, motion.final));
+        if (motion.retries > 0) {
+            yield put(actions.commandMoveAction(motion.piece, motion.final, motion.retries - 1));
+        }
     }
     
 }
@@ -51,7 +54,7 @@ function* commandMoveSelectedSaga(action : model.CommandMoveSelectedAction) {
     yield all(pieces
         .map((piece: model.PieceModel) => put(actions.commandStopAction(piece))) );
     yield all(pieces
-        .map((piece: model.PieceModel) => put(actions.commandMoveAction(piece, action.payload.dest))) );
+        .map((piece: model.PieceModel) => put(actions.commandMoveAction(piece, action.payload.dest, RETRIES))) );
 }
 
 
@@ -60,32 +63,15 @@ function* commandMovePieceSaga(action : model.CommandMoveAction) {
     let src: model.Point = yield select(state => selectors.getPointByPiece(state, piece.id));
     let clock: number = yield select(state => state.game.clock);
     //movementService.getPlan
-    let plan : Map<number, model.Point> = Map();
-    plan = plan.set(clock, src);
-    while (src.x !== dest.x || src.y !== dest.y) {
-        const vector = {
-            x: dest.x - src.x,
-            y: dest.y - src.y
-        }
-        const stepVector = {
-            x: vector.x === 0 ? 0 : vector.x / Math.abs(vector.x),
-            y: vector.y === 0 ? 0 : vector.y / Math.abs(vector.y)
-        }
-        src = {
-            x: src.x + stepVector.x,
-            y: src.y + stepVector.y
-        }
-        let valid = yield isDestinationValid(src)
-        plan = plan.set(++clock, src);
-    }
+    const plan : Map<number, model.Point> = getPlan(clock, src, dest);
     yield put(actions.planAction({
         piece,
-        points: plan
+        points: plan,
+        retries: action.payload.retries
     }));
 }
 
 function* isDestinationValid(dest : model.Point) {
-    const key = dest.x + "," + dest.y;
-    const piece = yield select(state => selectors.getPieceByPoint(state, key));
+    const piece = yield select(state => selectors.getPieceByPoint(state, new model.PointImpl(dest).toString()));
     return piece === null || piece === undefined;
 } 

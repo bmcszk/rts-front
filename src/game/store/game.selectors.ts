@@ -28,7 +28,7 @@ export const getCurrentMovement = createSelector([getClock, getMovement, getPoin
             const dest : Point | undefined = v.points.get(clock);
             const final : Point | undefined = v.points.last();
             if (src && dest && final) {
-                result.push({ piece: v.piece, src, dest, final });
+                result.push({ piece: v.piece, src, dest, final, retries: v.retries });
             }
         })
         return result;

@@ -27,6 +27,18 @@ export interface Point {
     y: number;
 }
 
+export class PointImpl implements Point {
+    x: number;
+    y: number;
+    constructor(point: Point) {
+        this.x = point.x;
+        this.y = point.y;
+    }
+    public toString = () : string => {
+        return this.x + "," + this.y;
+    }
+}
+
 export interface SquareProps {
     index: number;
     point: Point;
@@ -44,6 +56,7 @@ export interface PieceModel {
 export interface PlannedMovementModel {
     piece: PieceModel;
     points: Map<number, Point>;
+    retries: number;
 }
 
 export interface MotionModel {
@@ -51,6 +64,7 @@ export interface MotionModel {
     src: Point;
     dest: Point;
     final: Point;
+    retries: number;
 }
 
 export interface SelectionState {
@@ -136,6 +150,7 @@ export interface CommandMoveAction {
     payload: {
         piece: PieceModel;
         dest: Point;
+        retries: number;
     }
 }
 

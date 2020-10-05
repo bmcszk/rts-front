@@ -1,4 +1,4 @@
-import { GameAction, GameState, Point } from "../model";
+import { GameAction, GameState, Point, PointImpl } from "../model";
 import { Map, Set } from 'immutable';
 import { COMMAND_STOP, ENTER, INIT, PLAN, SELECTION_END, SELECTION_START, STEP_IN, STEP_OUT, TICK } from "./game.actions";
 
@@ -26,7 +26,7 @@ export function gameReducer(state : GameState = initialState(), action : GameAct
             for(let x = 0; x < action.payload.width; x++) {
                 for(let y = 0; y < action.payload.height; y++) {
                     const point = {x, y};
-                    const key = toString(point);
+                    const key = new PointImpl(point).toString();
                     board = board.set(key, { point, })
                 }
             }
@@ -52,7 +52,7 @@ export function gameReducer(state : GameState = initialState(), action : GameAct
         case STEP_OUT: {
             let piecesByPoint = state.piecesByPoint;
             let pointsByPiece = state.pointsByPiece;
-            const pointId = toString(action.payload.point);
+            const pointId = new PointImpl(action.payload.point).toString();
             piecesByPoint = piecesByPoint.remove(pointId);
             pointsByPiece = pointsByPiece.remove(action.payload.piece.id);
             return {...state, piecesByPoint, pointsByPiece };
@@ -61,7 +61,7 @@ export function gameReducer(state : GameState = initialState(), action : GameAct
             let piecesByPoint = state.piecesByPoint;
             let pointsByPiece = state.pointsByPiece;
             const point = action.payload.point;
-            const pointId = toString(point);
+            const pointId = new PointImpl(point).toString();
             const piece = action.payload.piece;
             piecesByPoint = piecesByPoint.set(pointId, piece);
             pointsByPiece = pointsByPiece.set(piece.id, point);
@@ -124,8 +124,4 @@ function getAllPointsInRange(start: Point, end: Point) : string[] {
         }
     }
     return result;
-}
-
-function toString(point : Point) {
-    return point.x + "," + point.y;
 }
