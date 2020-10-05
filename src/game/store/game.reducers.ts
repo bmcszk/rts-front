@@ -1,9 +1,10 @@
 import { GameAction, GameState, Point } from "../model";
 import { Map, Set } from 'immutable';
-import { ENTER, INIT, SELECTION_END, SELECTION_START, STEP_IN, STEP_OUT } from "./game.actions";
+import { COMMAND_STOP, ENTER, INIT, PLAN, SELECTION_END, SELECTION_START, STEP_IN, STEP_OUT, TICK } from "./game.actions";
 
 const initialState = () : GameState => {
     return {
+        clock: 0,
         config: { 
             width: 0,
             height: 0
@@ -12,6 +13,7 @@ const initialState = () : GameState => {
         piecesById: Map(),
         piecesByPoint: Map(),
         pointsByPiece: Map(),
+        movement: Map(),
         selectionStart: null,
         selected: Set()
     };
@@ -30,11 +32,22 @@ export function gameReducer(state : GameState = initialState(), action : GameAct
             }
             return {...state, config: action.payload, board};
         }
+        case TICK: {
+            return { ...state, clock: state.clock + 1};
+        }
         case ENTER: {
             let piecesById = state.piecesById;
             const piece = action.payload.piece
             piecesById = piecesById.set(piece.id, piece);
             return {...state, piecesById };
+        }
+        case PLAN: {
+            const piece = action.payload.piece;
+            return {...state, movement: state.movement.set(piece.id, action.payload) };
+        }
+        case COMMAND_STOP: {
+            const piece = action.payload.piece;
+            return {...state, movement: state.movement.remove(piece.id) }
         }
         case STEP_OUT: {
             let piecesByPoint = state.piecesByPoint;

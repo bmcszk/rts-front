@@ -1,4 +1,4 @@
-import { CommandMoveAction, CommandMoveSelectedAction, CommandStopAction, CommandStopSelectedAction, EnterAction, InitGameAction, MoveAction, PieceModel, PlaceAction, Point, SelectionEndAction, SelectionStartAction, StepAction } from "../model";
+import * as model from "../model";
 
 export const INIT = "INIT";
 export const ENTER = "ENTER";
@@ -14,21 +14,24 @@ export const COMMAND_MOVE = "COMMAND_MOVE";
 export const COMMAND_STOP_SELECTED = "COMMAND_STOP_SELECTED";
 export const COMMAND_STOP = "COMMAND_STOP";
 
-export const initGameAction = (width : number, height : number) : InitGameAction => {
+export const TICK = "TICK";
+export const PLAN = "PLAN";
+
+export const initGameAction = (width : number, height : number) : model.InitGameAction => {
     return {
         type: INIT,
         payload: { width, height }
     }
 }
 
-export const enterAction = (piece: PieceModel) : EnterAction => {
+export const enterAction = (piece: model.PieceModel) : model.EnterAction => {
     return {
         type: ENTER,
         payload: { piece }
     }
 }
 
-export const placeAction = (id : string , dest: Point) : PlaceAction => {
+export const placeAction = (id : string , dest: model.Point) : model.PlaceAction => {
     return {
         type: PLACE,
         payload: { id, dest }
@@ -36,7 +39,7 @@ export const placeAction = (id : string , dest: Point) : PlaceAction => {
 }
 
 export const moveAction = (
-        pieceId: string, src : Point, dest: Point) : MoveAction => {
+        pieceId: string, src : model.Point, dest: model.Point) : model.MoveAction => {
     return {
         type: MOVE,
         payload: { pieceId, src, dest }
@@ -45,21 +48,21 @@ export const moveAction = (
 
 export const stepAction = (
         type: typeof STEP_OUT | typeof STEP_IN, 
-        piece: PieceModel, point : Point) : StepAction => {
+        piece: model.PieceModel, point : model.Point) : model.StepAction => {
     return {
         type: type,
         payload: { piece, point }
     }   
 }
 
-export const selectionStartAction = (point : Point) : SelectionStartAction => {
+export const selectionStartAction = (point : model.Point) : model.SelectionStartAction => {
     return {
         type: SELECTION_START,
         payload: { point }
     }
 }
 
-export const selectionEndAction = (point : Point, shiftKey : boolean, ctrlKey : boolean, altKey : boolean) : SelectionEndAction => {
+export const selectionEndAction = (point : model.Point, shiftKey : boolean, ctrlKey : boolean, altKey : boolean) : model.SelectionEndAction => {
     return {
         type: SELECTION_END,
         payload: { point, shiftKey, ctrlKey, altKey }
@@ -67,29 +70,42 @@ export const selectionEndAction = (point : Point, shiftKey : boolean, ctrlKey : 
 }
 
 
-export const commandMoveSelectedAction = (dest : Point) : CommandMoveSelectedAction => {
+export const commandMoveSelectedAction = (dest : model.Point) : model.CommandMoveSelectedAction => {
     return {
         type: COMMAND_MOVE_SELECTED,
         payload: { dest: dest }
     }
 }
 
-export const commandMoveAction = (piece: PieceModel, dest : Point) : CommandMoveAction => {
+export const commandMoveAction = (piece: model.PieceModel, dest : model.Point) : model.CommandMoveAction => {
     return {
         type: COMMAND_MOVE,
         payload: { piece, dest }
     }
 }
 
-export const commandStopSelectedAction = () : CommandStopSelectedAction => {
+export const commandStopSelectedAction = () : model.CommandStopSelectedAction => {
     return {
         type: COMMAND_STOP_SELECTED
     }
 }
 
-export const commandStopAction = (piece: PieceModel) : CommandStopAction => {
+export const commandStopAction = (piece: model.PieceModel) : model.CommandStopAction => {
     return {
         type: COMMAND_STOP,
         payload: { piece }
+    }
+}
+
+export const tickAction = () : model.TickAction => {
+    return {
+        type: TICK
+    }
+}
+
+export const planAction = (movement : model.PlannedMovementModel) : model.PlanAction => {
+    return {
+        type: PLAN,
+        payload: movement
     }
 }

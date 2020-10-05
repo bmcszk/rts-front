@@ -1,13 +1,14 @@
 import { Map, Set } from 'immutable';
-import { COMMAND_MOVE, COMMAND_MOVE_SELECTED, COMMAND_STOP, COMMAND_STOP_SELECTED, ENTER, INIT, MOVE, STEP_IN, STEP_OUT, PLACE, SELECTION_END, SELECTION_START } from './store/game.actions';
+import * as actions from './store/game.actions';
 export interface GameState {
+    clock: number;
     config: ConfigState;
     board: Map<string, SquareModel>;
     piecesById: Map<string, PieceModel>;
     piecesByPoint: Map<string, PieceModel>;
     pointsByPiece: Map<string, Point>;
     //position: Map<string, string>;
-    //movement: Map<string, MovementModel>;
+    movement: Map<string, PlannedMovementModel>;
     selected: Set<string>;
     selectionStart: Point | null;
 }
@@ -40,10 +41,16 @@ export interface PieceModel {
     name: string;
 }
 
-export interface MovementModel {
-    id: string;
-    from: Point;
-    to: Point;
+export interface PlannedMovementModel {
+    piece: PieceModel;
+    points: Map<number, Point>;
+}
+
+export interface MotionModel {
+    piece: PieceModel;
+    src: Point;
+    dest: Point;
+    final: Point;
 }
 
 export interface SelectionState {
@@ -60,7 +67,7 @@ export interface PieceProps {
 }
 
 export interface InitGameAction {
-    type: typeof INIT;
+    type: typeof actions.INIT;
     payload: {
         width: number;
         height: number;
@@ -68,14 +75,14 @@ export interface InitGameAction {
 }
 
 export interface EnterAction {
-    type: typeof ENTER;
+    type: typeof actions.ENTER;
     payload: {
         piece: PieceModel;
     }
 }
 
 export interface PlaceAction {
-    type: typeof PLACE;
+    type: typeof actions.PLACE;
     payload: {
         id: string;
         dest: Point;
@@ -83,7 +90,7 @@ export interface PlaceAction {
 }
 
 export interface MoveAction {
-    type: typeof MOVE;
+    type: typeof actions.MOVE;
     payload: {
         pieceId: string;
         src: Point;
@@ -93,7 +100,7 @@ export interface MoveAction {
 
 
 export interface StepAction {
-    type: typeof STEP_OUT | typeof STEP_IN;
+    type: typeof actions.STEP_OUT | typeof actions.STEP_IN;
     payload: {
         piece: PieceModel;
         point: Point;
@@ -101,14 +108,14 @@ export interface StepAction {
 }
 
 export interface SelectionStartAction {
-    type: typeof SELECTION_START;
+    type: typeof actions.SELECTION_START;
     payload: {
         point: Point;
     }
 }
 
 export interface SelectionEndAction {
-    type: typeof SELECTION_END;
+    type: typeof actions.SELECTION_END;
     payload: {
         point: Point;
         shiftKey: boolean;
@@ -118,14 +125,14 @@ export interface SelectionEndAction {
 }
 
 export interface CommandMoveSelectedAction {
-    type: typeof COMMAND_MOVE_SELECTED;
+    type: typeof actions.COMMAND_MOVE_SELECTED;
     payload: {
         dest: Point;
     }
 }
 
 export interface CommandMoveAction {
-    type: typeof COMMAND_MOVE;
+    type: typeof actions.COMMAND_MOVE;
     payload: {
         piece: PieceModel;
         dest: Point;
@@ -133,14 +140,22 @@ export interface CommandMoveAction {
 }
 
 export interface CommandStopSelectedAction {
-    type: typeof COMMAND_STOP_SELECTED;
+    type: typeof actions.COMMAND_STOP_SELECTED;
 }
 
 export interface CommandStopAction {
-    type: typeof COMMAND_STOP;
+    type: typeof actions.COMMAND_STOP;
     payload: {
         piece: PieceModel;
     }
+}
+
+export interface TickAction {
+    type: typeof actions.TICK;
+}
+export interface PlanAction {
+    type: typeof actions.PLAN;
+    payload: PlannedMovementModel;
 }
 
 export type GameAction = InitGameAction
@@ -153,4 +168,6 @@ export type GameAction = InitGameAction
     | CommandMoveSelectedAction
     | CommandMoveAction
     | CommandStopSelectedAction
-    | CommandStopAction;
+    | CommandStopAction
+    | TickAction
+    | PlanAction;
