@@ -1,15 +1,14 @@
 import React from 'react';
 import './Board.css';
 import Square from './Square';
-import { useRecoilValue } from 'recoil';
-import { configState } from '../state';
-import { ConfigState, Point } from '../model';
+import { useSelector } from 'react-redux';
+import { BoardProps, ConfigState, Point } from '../model'
+import { RootState } from '../../store/reducer';
 
-function Board() {
-    // const config = useSelector(state => state.map.config);
-    const config = useRecoilValue<ConfigState>(configState);
+function Board(props : BoardProps) {
+    const config = useSelector<RootState, ConfigState>(state => state.game.config);
 
-    const renderSquare = (index : number, point: Point) => {
+    const renderSquare = (index : number, point : Point) => {
         return (
             <Square
                 key={index}
@@ -24,7 +23,7 @@ function Board() {
     for (let y = 0; y < config.height; y++) {
         let line = [];
         for(let x = 0; x < config.width; x++) {
-            const point = {x, y};
+            const point = {x, y };
             line.push(renderSquare(i++, point));
         }
         rows.push(<div key={y} className="board-row">{line}</div>);

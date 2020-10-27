@@ -1,59 +1,48 @@
 import React, { useEffect } from 'react';
 import './Game.css';
 import Board from './Board';
-import { useSetRecoilState } from 'recoil';
-import { boardState, configState } from '../state';
-import Moving from './Moving';
+import { useDispatch } from 'react-redux';
+import { enterAction, initGameAction, stepAction, STEP_IN } from '../store/game.actions';
 
 function Game() {
-    const setConfig = useSetRecoilState(configState);
-    const setSquare1 = useSetRecoilState(boardState("1,1"));
-    const setSquare2 = useSetRecoilState(boardState("2,2"));
-    const setSquare3 = useSetRecoilState(boardState("3,3"));
-
+    const dispatch = useDispatch();
     useEffect(() => {
-        setConfig({
-            width: 8,
-            height: 8
-        });
-    
-        setSquare1(s => ({
-            ...s,
-            occupied: {
-                id: 1,
-                name: "Q",
-                floaty: false,
-                selected: false
-            }
-        }));
-    
-        setSquare2(s => ({
-            ...s,
-            occupied: {
-                id: 2,
-                name: "W",
-                floaty: false,
-                selected: false
-            }
-        }));
-    
-        setSquare3(s => ({
-            ...s,
-            occupied: {
-                id: 3,
-                name: "E",
-                floaty: false,
-                selected: false
-            }
-        }));
-    }, [setConfig, setSquare1, setSquare2, setSquare3])
-    
+
+        dispatch(initGameAction(8, 8));
+
+        const A = {
+            id: "1", name: "A"
+        };
+
+        const B = {
+            id: "2", name: "B"
+        }
+
+        const C = {
+            id: "3", name: "C"
+        };
+
+        dispatch(enterAction(A));
+        dispatch(enterAction(B));
+        dispatch(enterAction(C));
+
+        dispatch(stepAction(STEP_IN, A, { x: 1, y: 1 }));
+        dispatch(stepAction(STEP_IN, B, { x: 1, y: 2 }));
+        dispatch(stepAction(STEP_IN, C, { x: 1, y: 3 }));
+    }, [dispatch]);
+
+    //const floatyPieces = useSelector<RootState, Map<string, MovementModel>>(state => state.game.movement)
+
     return (
-        <>
-            <Board />
-            <Moving />
-        </>
-    )
+        <div className="game">
+            {/* <div className="game-board"> */}
+                <Board />
+                {/* {floatyPieces.map((v, k) => {
+                    return (<Piece key={v.id} pieceId={v.id} />);
+                })} */}
+            {/* </div> */}
+        </div>
+    );
 }
 
 export default Game;
