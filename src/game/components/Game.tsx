@@ -7,8 +7,11 @@ import { enterAction, initGameAction, stepAction, STEP_IN } from '../store/game.
 function Game() {
     const dispatch = useDispatch();
     useEffect(() => {
+        const width = Math.floor(window.innerWidth / 16);
+        const height = Math.floor(window.innerHeight / 16);
 
-        dispatch(initGameAction(8, 8));
+
+        dispatch(initGameAction(width, height));
 
         const A = {
             id: "1", name: "A"

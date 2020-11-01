@@ -1,8 +1,7 @@
 
-.board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-  }
-  
-  
+.map {
+  border-collapse: collapse;
+  border-spacing: 0;
+  /* cell-spacing: 0; */
+  background: #74CF45;
+}

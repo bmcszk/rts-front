@@ -186,3 +186,19 @@ export type GameAction = InitGameAction
     | CommandStopAction
     | TickAction
     | PlanAction;
+
+
+export interface MapResponse {
+    width: number;
+    height: number;
+    rows: [[{
+        point: Point;
+        value?: string;
+        landType: string;
+        frontStyleClass: string;
+        backStyleClass: string;
+        groundLevel: number;
+        waterlevel?: number;
+        postGlacial: boolean;
+    }]];
+}

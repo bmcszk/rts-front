@@ -40,12 +40,14 @@ function Square(props : SquareProps) {
     }
 
     return (
-        <div className="square"
+        <td className="square">
+        <div className="tile plain1"
                 onContextMenu={disableEvent} 
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>
             {pieceComponent}
         </div>
+        </td>
     );
 }
 

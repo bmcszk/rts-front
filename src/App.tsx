@@ -1,4 +1,5 @@
 import React from 'react';
+import './reset.css';
 import './App.css';
 import Game from './game/components/Game';
 import { initStore } from './store/store';
