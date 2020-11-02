@@ -16,6 +16,13 @@ export interface GameState {
 export interface ConfigState {
     width: number;
     height: number;
+    view: ViewModel;
+}
+
+export interface ViewModel {
+    center: Point;
+    start: Point;
+    end: Point;
 }
 
 export interface BoardProps {
@@ -34,7 +41,7 @@ export class PointImpl implements Point {
         this.x = point.x;
         this.y = point.y;
     }
-    public toString = () : string => {
+    public toString = (): string => {
         return this.x + "," + this.y;
     }
 }
@@ -46,6 +53,13 @@ export interface SquareProps {
 
 export interface SquareModel {
     point: Point;
+    value?: string;
+    landType: string;
+    frontStyleClass: string;
+    backStyleClass: string;
+    groundLevel: number;
+    waterlevel?: number;
+    postGlacial: boolean;
 }
 
 export interface PieceModel {
@@ -83,6 +97,7 @@ export interface PieceProps {
 export interface InitGameAction {
     type: typeof actions.INIT;
     payload: {
+        center: Point;
         width: number;
         height: number;
     }
@@ -173,6 +188,29 @@ export interface PlanAction {
     payload: PlannedMovementModel;
 }
 
+export interface MapRequest {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+}
+
+export interface MapResponse {
+    width: number;
+    height: number;
+    rows: SquareModel[][];
+}
+
+export interface MapLoadRequestAction {
+    type: typeof actions.MAP_LOAD_REQUEST,
+    payload: MapRequest
+}
+
+export interface MapLoadResponseSuccessAction {
+    type: typeof actions.MAP_LOAD_RESPONSE_SUCCESS;
+    payload: MapResponse;
+}
+
 export type GameAction = InitGameAction
     | EnterAction
     | PlaceAction
@@ -185,20 +223,5 @@ export type GameAction = InitGameAction
     | CommandStopSelectedAction
     | CommandStopAction
     | TickAction
-    | PlanAction;
-
-
-export interface MapResponse {
-    width: number;
-    height: number;
-    rows: [[{
-        point: Point;
-        value?: string;
-        landType: string;
-        frontStyleClass: string;
-        backStyleClass: string;
-        groundLevel: number;
-        waterlevel?: number;
-        postGlacial: boolean;
-    }]];
-}
+    | PlanAction
+    | MapLoadResponseSuccessAction;

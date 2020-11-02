@@ -20,9 +20,9 @@ function Board(props: BoardProps) {
 
     let rows = [];
     let i = 0;
-    for (let y = 0; y < config.height; y++) {
+    for (let y = config.view.start.y; y <= config.view.end.y; y++) {
         let line = [];
-        for (let x = 0; x < config.width; x++) {
+        for (let x = config.view.start.x; x <= config.view.end.x; x++) {
             const point = { x, y };
             line.push(renderSquare(i++, point));
         }

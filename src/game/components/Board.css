@@ -5,3 +5,8 @@
   /* cell-spacing: 0; */
   background: #74CF45;
 }
+
+.map > tbody > tr > td {
+  width: 16px;
+  height: 16px;
+}

@@ -1,10 +1,22 @@
 
+.grass {
+    background: #74CF45;
+}
+
+.water {
+    background: #68A8C8;
+}
+
+.sand {
+    background: #BA936B;
+}
+
 .square {
   width: 16px;
   height: 16px;
-  }
+}
 
-  .emptyTile {
+.emptyTile {
     width: 16px;
     height: 16px;
 }

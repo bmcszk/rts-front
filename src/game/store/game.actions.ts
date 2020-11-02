@@ -17,10 +17,14 @@ export const COMMAND_STOP = "COMMAND_STOP";
 export const TICK = "TICK";
 export const PLAN = "PLAN";
 
-export const initGameAction = (width : number, height : number) : model.InitGameAction => {
+export const MAP_LOAD_REQUEST = "MAP_LOAD_REQUEST";
+export const MAP_LOAD_RESPONSE_SUCCESS = "MAP_LOAD_RESPONSE_SUCCESS";
+export const MAP_LOAD_RESPONSE_FAILURE = "MAP_LOAD_RESPONSE_FAILURE";
+
+export const initGameAction = (center: model.Point, width : number, height : number) : model.InitGameAction => {
     return {
         type: INIT,
-        payload: { width, height }
+        payload: { center, width, height }
     }
 }
 
@@ -107,5 +111,19 @@ export const planAction = (movement : model.PlannedMovementModel) : model.PlanAc
     return {
         type: PLAN,
         payload: movement
+    }
+}
+
+export const mapLoadRequestAction = (request: model.MapRequest) : model.MapLoadRequestAction => {
+    return {
+        type: MAP_LOAD_REQUEST,
+        payload: request
+    }
+}
+
+export const mapLoadResponseSuccessAction = (response: model.MapResponse) : model.MapLoadResponseSuccessAction => {
+    return {
+        type: MAP_LOAD_RESPONSE_SUCCESS,
+        payload: response
     }
 }

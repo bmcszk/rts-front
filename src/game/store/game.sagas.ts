@@ -1,9 +1,10 @@
-import { all, takeLatest, select, put, takeEvery, delay } from "redux-saga/effects";
+import { all, takeLatest, select, put, takeEvery, delay, call } from "redux-saga/effects";
 import * as model from "../model";
 import * as selectors from "./game.selectors";
 import * as actions from "./game.actions"
 import { Map } from 'immutable';
 import { getPlan } from "../movement.service";
+import { getMap } from "../api/map.api";
 
 const RETRIES : number = 3;
 
@@ -13,7 +14,8 @@ export function* gameSaga() {
         takeLatest(actions.INIT, initGameSaga),
         takeLatest(actions.TICK, tickSaga),
         takeLatest(actions.COMMAND_MOVE_SELECTED, commandMoveSelectedSaga),
-        takeEvery(actions.COMMAND_MOVE, commandMovePieceSaga)
+        takeEvery(actions.COMMAND_MOVE, commandMovePieceSaga),
+        takeLatest(actions.MAP_LOAD_REQUEST, mapLoadSaga)
     ]);
 }
 
@@ -75,3 +77,13 @@ function* isDestinationValid(dest : model.Point) {
     const piece = yield select(state => selectors.getPieceByPoint(state, new model.PointImpl(dest).toString()));
     return piece === null || piece === undefined;
 } 
+
+function* mapLoadSaga(action: model.MapLoadRequestAction) {
+    try {
+        const response : model.MapResponse = yield call(getMap, action.payload.x, action.payload.y, action.payload.width, action.payload.height);
+        yield put(actions.mapLoadResponseSuccessAction(response));
+    } catch(error) {
+        console.log(error);
+    }
+
+}

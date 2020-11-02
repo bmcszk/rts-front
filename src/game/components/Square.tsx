@@ -3,12 +3,12 @@ import './Square.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { commandMoveSelectedAction, selectionStartAction, selectionEndAction } from '../store/game.actions'
 import Piece from './Piece'
-import { PieceModel, SquareProps } from '../model';
+import { PieceModel, SquareModel, SquareProps } from '../model';
 import { RootState } from '../../store/reducer';
 
 function Square(props : SquareProps) {
     const squareKey = props.point.x + "," + props.point.y;
-    //const square = useSelector<RootState, SquareModel>(state => state.game.board.get(squareKey)!);
+    const square = useSelector<RootState, SquareModel | undefined>(state => state.game.board.get(squareKey));
     const piece = useSelector<RootState, PieceModel | undefined>(state => state.game.piecesByPoint.get(squareKey));
     const pieceComponent = piece
         ? (<Piece piece={piece} />)
@@ -40,8 +40,8 @@ function Square(props : SquareProps) {
     }
 
     return (
-        <td className="square">
-        <div className="tile plain1"
+        <td className={square?.backStyleClass ?? ""}>
+        <div className={`tile ${square?.frontStyleClass}`}
                 onContextMenu={disableEvent} 
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>
