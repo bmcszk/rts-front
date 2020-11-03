@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { RootState } from '../../store/reducer';
-import { PlannedMovementModel, PieceModel, Point, MotionModel } from '../model';
+import { PlannedMovementModel, PieceModel, Point, MotionModel, ConfigState } from '../model';
 import { Map } from 'immutable';
 
 export const getSelected = (state : RootState) => state.game.selected;
@@ -11,6 +11,7 @@ export const getPieceByPoint = (state : RootState, pointId : string) : PieceMode
 
 export const getPointsByPieceMap = (state : RootState) : Map<string, Point> => state.game.pointsByPiece;
 export const getPointByPiece = (state : RootState, pieceId : string) : Point | undefined => getPointsByPieceMap(state).get(pieceId);
+export const getConfig = (state : RootState) : ConfigState => state.game.config;
 
 export const getSelectedPieces = createSelector([getSelectedArray, getPiecesByIdMap], 
     (selected, piecesByIdMap) => {

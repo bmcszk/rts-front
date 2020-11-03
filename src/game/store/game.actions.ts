@@ -114,10 +114,10 @@ export const planAction = (movement : model.PlannedMovementModel) : model.PlanAc
     }
 }
 
-export const mapLoadRequestAction = (request: model.MapRequest) : model.MapLoadRequestAction => {
+export const mapLoadRequestAction = (center: model.Point) : model.MapLoadRequestAction => {
     return {
         type: MAP_LOAD_REQUEST,
-        payload: request
+        payload: center
     }
 }
 

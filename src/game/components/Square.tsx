@@ -1,7 +1,7 @@
 import React from 'react';
 import './Square.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { commandMoveSelectedAction, selectionStartAction, selectionEndAction } from '../store/game.actions'
+import { commandMoveSelectedAction, selectionStartAction, selectionEndAction, mapLoadRequestAction } from '../store/game.actions'
 import Piece from './Piece'
 import { PieceModel, SquareModel, SquareProps } from '../model';
 import { RootState } from '../../store/reducer';
@@ -39,12 +39,20 @@ function Square(props : SquareProps) {
         return disableEvent(e);
     }
 
+    const handleDoubleClick = (e: React.MouseEvent) => {
+        if (e.button === 0) {
+            dispatch(mapLoadRequestAction(props.point));
+        }
+        return disableEvent(e);
+    }
+
     return (
         <td className={square?.backStyleClass ?? ""}>
         <div className={`tile ${square?.frontStyleClass}`}
                 onContextMenu={disableEvent} 
                 onMouseDown={handleMouseDown}
-                onMouseUp={handleMouseUp}>
+                onMouseUp={handleMouseUp}
+                onDoubleClick={handleDoubleClick}>
             {pieceComponent}
         </div>
         </td>

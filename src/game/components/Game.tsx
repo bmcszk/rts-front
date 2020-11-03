@@ -12,9 +12,7 @@ function Game() {
         const center = { x: 0, y: 0};
 
         dispatch(actions.initGameAction(center, width, height));
-        dispatch(actions.mapLoadRequestAction({
-            x: center.x, y: center.y, width, height
-        }));
+        dispatch(actions.mapLoadRequestAction(center));
 
         const A = {
             id: "1", name: "A"

@@ -80,7 +80,8 @@ function* isDestinationValid(dest : model.Point) {
 
 function* mapLoadSaga(action: model.MapLoadRequestAction) {
     try {
-        const response : model.MapResponse = yield call(getMap, action.payload.x, action.payload.y, action.payload.width, action.payload.height);
+        const config : model.ConfigState = yield select(selectors.getConfig);
+        const response : model.MapResponse = yield call(getMap, action.payload.x, action.payload.y, config.width, config.height);
         yield put(actions.mapLoadResponseSuccessAction(response));
     } catch(error) {
         console.log(error);

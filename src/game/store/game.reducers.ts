@@ -1,18 +1,18 @@
-import { GameAction, GameState, Point, PointImpl } from "../model";
+import { ConfigState, GameAction, GameState, Point, PointImpl, ViewModel } from "../model";
 import { Map, Set } from 'immutable';
-import { COMMAND_STOP, ENTER, INIT, MAP_LOAD_RESPONSE_SUCCESS, PLAN, SELECTION_END, SELECTION_START, STEP_IN, STEP_OUT, TICK } from "./game.actions";
+import { COMMAND_STOP, ENTER, INIT, MAP_LOAD_REQUEST, MAP_LOAD_RESPONSE_SUCCESS, PLAN, SELECTION_END, SELECTION_START, STEP_IN, STEP_OUT, TICK } from "./game.actions";
 
 const initialState = (): GameState => {
     return {
         clock: 0,
         config: {
             width: 0,
-            height: 0,
-            view: {
-                center: { x: 0, y: 0 },
-                start: { x: 0, y: 0 },
-                end: { x: 0, y: 0 }
-            }
+            height: 0
+        },
+        view: {
+            center: { x: 0, y: 0 },
+            start: { x: 0, y: 0 },
+            end: { x: 0, y: 0 }
         },
         board: Map(),
         piecesById: Map(),
@@ -30,31 +30,24 @@ export function gameReducer(state: GameState = initialState(), action: GameActio
             let config = { ...state.config };
             config.width = action.payload.width;
             config.height = action.payload.height;
-            const halfWidth = Math.floor(action.payload.width / 2);
-            const halfHeight = Math.floor(action.payload.height / 2);
-            config.view = {
-                center: action.payload.center,
-                start: {
-                    x: action.payload.center.x - halfWidth,
-                    y: action.payload.center.y - halfHeight
-                },
-                end: {
-                    x: action.payload.center.x + halfWidth,
-                    y: action.payload.center.y + halfHeight
-                }
-            }
-            return { ...state, config };
+            return { ...state, config, view: createView(action.payload.center, config) };
+        }
+        case MAP_LOAD_REQUEST: {
+            return {...state, view: createView(action.payload, state.config)}
         }
         case MAP_LOAD_RESPONSE_SUCCESS: {
-            let board = state.board;
-            for (let i = 0; i < action.payload.rows.length; i++) {
-                const row = action.payload.rows[i];
-                for (let j = 0; j < row.length; j++) {
-                    const square = row[j];
-                    const key = new PointImpl(square.point).toString();
-                    board = board.set(key, square)
+            const board = state.board.withMutations(
+                map => {
+                    for (let i = 0; i < action.payload.rows.length; i++) {
+                        const row = action.payload.rows[i];
+                        for (let j = 0; j < row.length; j++) {
+                            const square = row[j];
+                            const key = new PointImpl(square.point).toString();
+                            map = map.set(key, square)
+                        }
+                    }  
                 }
-            }
+            )
             return { ...state, board }
         }
         case TICK: {
@@ -110,6 +103,25 @@ export function gameReducer(state: GameState = initialState(), action: GameActio
         default:
             return state;
     }
+}
+
+function createView(center : Point, config : ConfigState) : ViewModel {
+    // TODO from config?
+    const width = Math.floor(window.innerWidth / 16);
+    const height = Math.floor(window.innerHeight / 16);
+    const halfWidth = Math.floor(width / 2);
+    const halfHeight = Math.floor(height / 2);
+    return {
+        center: center,
+        start: {
+            x: center.x - halfWidth,
+            y: center.y - halfHeight
+        },
+        end: {
+            x: center.x + halfWidth,
+            y: center.y + halfHeight
+        }
+    } 
 }
 
 

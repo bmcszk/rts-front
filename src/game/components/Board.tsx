@@ -2,11 +2,11 @@ import React from 'react';
 import './Board.css';
 import Square from './Square';
 import { useSelector } from 'react-redux';
-import { BoardProps, ConfigState, Point } from '../model'
+import { BoardProps,  Point, ViewModel } from '../model'
 import { RootState } from '../../store/reducer';
 
 function Board(props: BoardProps) {
-    const config = useSelector<RootState, ConfigState>(state => state.game.config);
+    const view = useSelector<RootState, ViewModel>(state => state.game.view);
 
     const renderSquare = (index: number, point: Point) => {
         return (
@@ -20,9 +20,9 @@ function Board(props: BoardProps) {
 
     let rows = [];
     let i = 0;
-    for (let y = config.view.start.y; y <= config.view.end.y; y++) {
+    for (let y = view.start.y; y <= view.end.y; y++) {
         let line = [];
-        for (let x = config.view.start.x; x <= config.view.end.x; x++) {
+        for (let x = view.start.x; x <= view.end.x; x++) {
             const point = { x, y };
             line.push(renderSquare(i++, point));
         }

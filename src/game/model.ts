@@ -3,6 +3,7 @@ import * as actions from './store/game.actions';
 export interface GameState {
     clock: number;
     config: ConfigState;
+    view: ViewModel;
     board: Map<string, SquareModel>;
     piecesById: Map<string, PieceModel>;
     piecesByPoint: Map<string, PieceModel>;
@@ -16,7 +17,6 @@ export interface GameState {
 export interface ConfigState {
     width: number;
     height: number;
-    view: ViewModel;
 }
 
 export interface ViewModel {
@@ -203,7 +203,7 @@ export interface MapResponse {
 
 export interface MapLoadRequestAction {
     type: typeof actions.MAP_LOAD_REQUEST,
-    payload: MapRequest
+    payload: Point;
 }
 
 export interface MapLoadResponseSuccessAction {
@@ -224,4 +224,5 @@ export type GameAction = InitGameAction
     | CommandStopAction
     | TickAction
     | PlanAction
+    | MapLoadRequestAction
     | MapLoadResponseSuccessAction;
